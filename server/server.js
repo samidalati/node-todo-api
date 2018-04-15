@@ -26,15 +26,25 @@ app.post('/todos', (req, res) => {
     .catch((err) => {
         res.status(400).send(err);
     })
+});
+
+app.get('/todos', (req, res) => {
+    Todo.find()
+    .then((todos) => {
+        res.send({todos});
+    })
+    .catch((err) => {
+        res.status(400).send(err);
+    })
 })
 
 app.listen(port, () => {
 
-})
+});
 
 module.exports = {
     app
-}
+};
 
 // var newTodo = new Todo({
 //     text: 'cook dinner again 3', completed: true, completedAt: 2018-04-04
