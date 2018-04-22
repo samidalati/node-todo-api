@@ -35,7 +35,7 @@ app.get('/todos', (req, res) => {
     })
     .catch((err) => {
         res.status(400).send(err);
-    })
+    });
 })
 
 app.listen(port, () => {
@@ -45,28 +45,3 @@ app.listen(port, () => {
 module.exports = {
     app
 };
-
-// var newTodo = new Todo({
-//     text: 'cook dinner again 3', completed: true, completedAt: 2018-04-04
-// });
-
-// newTodo.save()
-// .then((doc) => {
-//     console.log(doc);
-// })
-// .catch((e) => {
-//     console.log('Unable to save to collection ', e);
-// });
-
-
-// var newUser = new User({
-//     email: 'sjdalati@gmail.com'
-// });
-
-// newUser.save()
-// .then((doc) => {
-//     console.log(doc);
-// })
-// .catch((err) => {
-//     console.log(err);
-// })
