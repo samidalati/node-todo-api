@@ -8,7 +8,7 @@ var {User}      = require('./models/users');
 const {ObjectID}    =   require('mongodb');
 
 
-const port = 3000;
+const port = process.env.PORT || 3000; // process.env.PORT  for heroku 
 
 var app = express();
 
