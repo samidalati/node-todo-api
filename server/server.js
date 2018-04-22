@@ -1,5 +1,6 @@
-var express     = require('express');
-var bodyParser  = require('body-parser');
+const _           = require('lodash');
+const express     = require('express');
+const bodyParser  = require('body-parser');
 
 var {mongoose}  = require('./db/mongoose');
 var {Todo}      = require('./models/todo');
@@ -79,6 +80,38 @@ app.delete('/todos/:id', (req, res) => {
     }
     
     Todo.findByIdAndRemove(id).then((todo) => {
+        if(!todo){
+            // if no todo, send back 404 with empty body
+            return res.status(404).send();
+        }
+        // if todo, send it back
+        res.send({todo});
+    }).catch((e) => {
+        //400 - and send empty body back
+        res.status(400).send();
+    })
+});
+
+app.patch('/todos/:id', (req, res) => {
+    // res.send(req.params);
+    var id = req.params.id;
+    var body = _.pick(req.body, ['text', 'completed']);
+
+    //validate id
+    if(!ObjectID.isValid(id)){
+        console.log("Invaild ID")
+        // if not vaild then 404 and empty body
+        return res.status(404).send();
+    }
+    
+    if(_.isBoolean(body.completed) && body.completed){
+        body.completedAt = new Date().getTime();
+    } else{
+        body.completed = false;
+        body.completedAt = null;
+    }
+
+    Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
         if(!todo){
             // if no todo, send back 404 with empty body
             return res.status(404).send();

@@ -10,7 +10,9 @@ const test_todos = [{
         text: 'First test todo'
     }, {
         _id: new ObjectID(),
-        text: 'Second test todo'
+        text: 'Second test todo',
+        comepleted: true,
+        comepletedAt: 334
     }];
 
 beforeEach((done) => {
@@ -132,6 +134,58 @@ describe('Delete /todos/:id', () => {
     it('Should return 404 if non object id', (done) => {
         request(app)
         .delete(`/todos/123abc`)
+        .expect(404)
+        .end(done);
+    });
+
+});
+
+describe('Update /todos/:id', () => {
+    it('Should update todo doc', (done) => {
+        var testTodo = {
+            text: "test todo text",
+            completed: true
+        }
+
+        request(app)
+        .patch(`/todos/${test_todos[0]._id.toHexString()}`)
+        .send(testTodo)
+        .expect(200)
+        .expect((res) => {
+            expect(res.body.todo.text).toBe(testTodo.text);
+            expect(res.body.todo.completedAt).toBeA('number');
+        })
+        .end(done);
+    });
+
+    it('Should clear completedAt when todo is not completed', (done) => {
+        var testTodo = {
+            text: "test todo text",
+            completed: false
+        }
+
+        request(app)
+        .patch(`/todos/${test_todos[1]._id.toHexString()}`)
+        .send(testTodo)
+        .expect(200)
+        .expect((res) => {
+            expect(res.body.todo.text).toBe(testTodo.text);
+            expect(res.body.todo.completedAt).toBe(null);
+        })
+        .end(done);
+    });
+
+    it('Should return 404 if todo not found', (done) => {
+        var hexID = new ObjectID().toHexString();
+        request(app)
+        .patch(`/todos/${hexID}`)
+        .expect(404)
+        .end(done);
+    });
+
+    it('Should return 404 if non object id', (done) => {
+        request(app)
+        .patch(`/todos/123abc`)
         .expect(404)
         .end(done);
     });
